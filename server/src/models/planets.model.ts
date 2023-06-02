@@ -44,4 +44,8 @@ export const loadPlanetsData = () => {
   });
 };
 
-export default habitablePlanets;
+const fetchHabitablePlanets = () => {
+  return habitablePlanets;
+}
+
+export default fetchHabitablePlanets;
