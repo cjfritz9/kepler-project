@@ -21,11 +21,32 @@ const httpGetLaunches = async () => {
 const httpSubmitLaunch = async (launch) => {
   // TODO: Once API is ready.
   // Submit given launch data to launch system.
+  // const response = await axios.post(`${API_URL}/launches`, launch);
+  const response = await axios
+    .post(`${API_URL}/launches`, launch)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((error) => {
+      console.log('response error: ', error);
+      return { error: '404: Bad Request' };
+    });
+  return response;
 };
 
 const httpAbortLaunch = async (id) => {
   // TODO: Once API is ready.
   // Delete launch with given ID.
+  const response = await axios
+    .delete(`${API_URL}/launches/${id}`)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((error) => {
+      console.log('response error: ', error);
+      return { error: '404: Bad Request' };
+    });
+  return response;
 };
 
 export { httpGetPlanets, httpGetLaunches, httpSubmitLaunch, httpAbortLaunch };
