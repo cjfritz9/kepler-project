@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import {
   addNewLaunch,
   destroyLaunch,
-  fetchAllLaunches
+  fetchAllLaunches,
+  launchExistsWithId
 } from '../../models/launches.model.js';
 
 export const getAllLaunches = (_req: Request, res: Response) => {
@@ -11,7 +12,6 @@ export const getAllLaunches = (_req: Request, res: Response) => {
 
 export const postNewLaunch = (req: Request, res: Response) => {
   const launch = req.body;
-  console.log(launch);
   if (
     !launch.mission ||
     !launch.rocket ||
@@ -34,8 +34,15 @@ export const postNewLaunch = (req: Request, res: Response) => {
 
 export const deleteLaunch = (req: Request, res: Response) => {
   const { id } = req.params;
-  destroyLaunch(+id);
-  res
-    .status(202)
-    .send({ success: `Removed flight number ${id} from launches.` });
+  if (!launchExistsWithId(+id)) {
+    return res.status(404).send({
+      error: `No launch found by Flight Number ${id}`
+    });
+  } else {
+    const aborted = destroyLaunch(+id);
+    return res.status(202).send({
+      success: `Removed flight number ${id} from launches.`,
+      launchData: aborted
+    });
+  }
 };

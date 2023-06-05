@@ -35,7 +35,7 @@ export const addNewLaunch = (launch: Launch) => {
   launches.set(
     latestFlightNumber,
     Object.assign(launch, {
-      customers: ['ZTM', 'NASA'],
+      customer: ['ZTM', 'NASA'],
       flightNumber: latestFlightNumber,
       upcoming: true,
       success: true
@@ -43,6 +43,13 @@ export const addNewLaunch = (launch: Launch) => {
   );
 };
 
+export const launchExistsWithId = (flightNumber: number) => {
+  return launches.has(flightNumber);
+};
+
 export const destroyLaunch = (flightNumber: number) => {
-  launches.delete(flightNumber);
+  const aborted = launches.get(flightNumber);
+  aborted.upcoming = false;
+  aborted.success = false;
+  return aborted;
 };

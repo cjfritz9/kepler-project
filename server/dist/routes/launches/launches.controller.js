@@ -1,10 +1,9 @@
-import { addNewLaunch, destroyLaunch, fetchAllLaunches } from '../../models/launches.model.js';
+import { addNewLaunch, destroyLaunch, fetchAllLaunches, launchExistsWithId } from '../../models/launches.model.js';
 export const getAllLaunches = (_req, res) => {
     return res.status(200).json(fetchAllLaunches());
 };
 export const postNewLaunch = (req, res) => {
     const launch = req.body;
-    console.log(launch);
     if (!launch.mission ||
         !launch.rocket ||
         !launch.launchDate ||
@@ -24,8 +23,16 @@ export const postNewLaunch = (req, res) => {
 };
 export const deleteLaunch = (req, res) => {
     const { id } = req.params;
-    destroyLaunch(+id);
-    res
-        .status(202)
-        .send({ success: `Removed flight number ${id} from launches.` });
+    if (!launchExistsWithId(+id)) {
+        return res.status(404).send({
+            error: `No launch found by Flight Number ${id}`
+        });
+    }
+    else {
+        const aborted = destroyLaunch(+id);
+        return res.status(202).send({
+            success: `Removed flight number ${id} from launches.`,
+            launchData: aborted
+        });
+    }
 };

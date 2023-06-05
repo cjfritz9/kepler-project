@@ -17,12 +17,18 @@ export const fetchAllLaunches = () => {
 export const addNewLaunch = (launch) => {
     latestFlightNumber++;
     launches.set(latestFlightNumber, Object.assign(launch, {
-        customers: ['ZTM', 'NASA'],
+        customer: ['ZTM', 'NASA'],
         flightNumber: latestFlightNumber,
         upcoming: true,
         success: true
     }));
 };
+export const launchExistsWithId = (flightNumber) => {
+    return launches.has(flightNumber);
+};
 export const destroyLaunch = (flightNumber) => {
-    launches.delete(flightNumber);
+    const aborted = launches.get(flightNumber);
+    aborted.upcoming = false;
+    aborted.success = false;
+    return aborted;
 };
