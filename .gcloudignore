@@ -14,8 +14,6 @@
 .gitignore
 tsconfig.json
 
-client/
-
 server/__tests__
 server/src
 server/.env
