@@ -4,6 +4,8 @@ WORKDIR /server/dist
 
 COPY . .
 
-RUN npm run install-all && npm install typescript -g && tsc
+RUN npm run install-all && npm install typescript -g && tsc && npm run client:build
 
-CMD ["npm", "run", "deploy"]
+COPY . .
+
+CMD ["npm", "run", "server"]
