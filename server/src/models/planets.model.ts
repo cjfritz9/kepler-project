@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { parse } from 'csv-parse';
+import PlanetsModel from './planets.mongo.js';
 
 interface Planet {
   kepler_name: string;
@@ -29,9 +30,9 @@ export const loadPlanetsData = () => {
           columns: true
         })
       )
-      .on('data', (data: Planet) => {
+      .on('data', async (data: Planet) => {
         if (isHabitablePlanet(data)) {
-          habitablePlanets.push(data);
+          await savePlanetData(data);
         }
       })
       .on('error', (err: any) => {
@@ -44,8 +45,32 @@ export const loadPlanetsData = () => {
   });
 };
 
-const fetchHabitablePlanets = () => {
-  return habitablePlanets;
-}
+const fetchHabitablePlanets = async () => {
+  return await PlanetsModel.find(
+    {},
+    {
+      _id: 0,
+      __v: 0
+    }
+  );
+};
+
+const savePlanetData = async (planetData: Planet) => {
+  try {
+    await PlanetsModel.updateOne(
+      {
+        kepler_name: planetData.kepler_name
+      },
+      {
+        kepler_name: planetData.kepler_name
+      },
+      {
+        upsert: true
+      }
+    );
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 export default fetchHabitablePlanets;

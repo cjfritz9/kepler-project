@@ -9,11 +9,13 @@
     "install-client": "npm install --prefix client",
     "install-all": "npm install && npm install --prefix client && npm install --prefix server",
     "server": "npm start --prefix server",
-    "server:dev": "npm run start:dev --prefix server",
     "client:build": "npm run build --prefix client",
+    "server:dev": "npm run start:dev --prefix server",
     "client:dev": "npm start --prefix client",
     "full:dev": "npm run server:dev & npm run client:dev",
-    "deploy": "npm run build --prefix client && npm start --prefix server"
+    "deploy": "npm run build --prefix client && npm start --prefix server",
+    "deploy:cluster": "npm run build --prefix client && npm run cluster --prefix server",
+    "shutdown": "npm run cluster:stop --prefix server"
   },
   "keywords": [],
   "author": "",

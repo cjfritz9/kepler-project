@@ -1,8 +1,8 @@
-import { addNewLaunch, destroyLaunch, fetchAllLaunches, launchExistsWithId } from '../../models/launches.model.js';
-export const getAllLaunches = (_req, res) => {
-    return res.status(200).json(fetchAllLaunches());
+import { scheduleNewLaunch, abortLaunch, fetchAllLaunches, launchExistsWithId } from '../../models/launches.model.js';
+export const getAllLaunches = async (_req, res) => {
+    return res.status(200).json(await fetchAllLaunches());
 };
-export const postNewLaunch = (req, res) => {
+export const postNewLaunch = async (req, res) => {
     const launch = req.body;
     if (!launch.mission ||
         !launch.rocket ||
@@ -18,21 +18,28 @@ export const postNewLaunch = (req, res) => {
             error: 'Invalid launch date'
         });
     }
-    addNewLaunch(launch);
-    return res.status(201).send(launch);
+    const newLaunch = await scheduleNewLaunch(launch);
+    return res.status(201).send(newLaunch);
 };
-export const deleteLaunch = (req, res) => {
+export const deleteLaunch = async (req, res) => {
     const { id } = req.params;
-    if (!launchExistsWithId(+id)) {
+    const launchExists = await launchExistsWithId(+id);
+    if (!launchExists) {
         return res.status(404).send({
             error: `No launch found by Flight Number ${id}`
         });
     }
     else {
-        const aborted = destroyLaunch(+id);
-        return res.status(202).send({
-            success: `Removed flight number ${id} from launches.`,
-            launchData: aborted
-        });
+        const aborted = await abortLaunch(+id);
+        if (!aborted) {
+            return res.status(400).send({
+                error: 'Launch not aborted'
+            });
+        }
+        else {
+            return res.status(202).send({
+                success: `Removed flight number ${id} from launches.`
+            });
+        }
     }
 };
