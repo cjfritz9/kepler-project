@@ -1,0 +1,14 @@
+.gcloudignore
+.git
+.gitignore
+
+server/__tests__
+server/src
+server/.env
+server/.git
+server/.gitignore
+
+# Node.js dependencies:
+node_modules/
+server/node_modules/
+client/node_modules/
