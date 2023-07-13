@@ -1,6 +1,6 @@
 FROM node:16
 
-WORKDIR /dist
+WORKDIR /server
 
 COPY package*.json ./
 
@@ -12,4 +12,4 @@ ENV PORT=8080
 
 EXPOSE 8080
 
-CMD ["npm", "run", "deploy:cluster"]
+CMD ["npm", "run", "deploy:docker"]

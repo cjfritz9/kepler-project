@@ -15,6 +15,7 @@
     "full:dev": "npm run server:dev & npm run client:dev",
     "deploy": "npm run build --prefix client && npm start --prefix server",
     "deploy:cluster": "npm run build --prefix client && npm run cluster --prefix server",
+    "deploy:docker": "npm run build --prefix client && npm run cluster:docker --prefix server",
     "shutdown": "npm run cluster:stop --prefix server"
   },
   "keywords": [],
