@@ -2,7 +2,7 @@ FROM node:16
 
 WORKDIR /
 
-COPY package*.json .
+COPY package*.json ./
 COPY client/package*.json client/
 COPY server/package*.json server/
 COPY client/ client/
