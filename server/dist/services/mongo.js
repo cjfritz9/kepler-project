@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
-const MONGO_URI = 'mongodb+srv://nasa-api:Vk2Ctzt2Xkd8bHh6@nasa-cluster.rqgtwab.mongodb.net/nasa-db?retryWrites=true&w=majority';
+import dotenv from 'dotenv';
+dotenv.config();
+const MONGO_URI = process.env.MONGO_URI;
 mongoose.connection.once('open', () => {
     console.log('Connected to MongoDB');
 });

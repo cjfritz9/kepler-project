@@ -14,7 +14,7 @@ app.use(
     origin: '*'
   })
 );
-// app.use(morgan('combined'));
+app.use(morgan('combined'));
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
