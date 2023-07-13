@@ -4,7 +4,9 @@ WORKDIR /server/dist
 
 COPY . .
 
-RUN npm run install-all
+RUN npm run install-all && npm install typescript -g
+
+RUN tsc
 
 ENV PORT=8080
 
