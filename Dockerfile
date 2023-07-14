@@ -7,7 +7,7 @@ COPY . .
 RUN npm run install-all
 RUN npm run client:build
 
-WORKDIR /server/dist
+WORKDIR /server
 
 ENV PORT=8080
 ENV MONGO_URI='mongodb+srv://nasa-api:Vk2Ctzt2Xkd8bHh6@nasa-cluster.rqgtwab.mongodb.net/nasa-db?retryWrites=true&w=majority'
