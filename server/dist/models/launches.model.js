@@ -3,16 +3,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 import launchesDatabase from './launches.mongo.js';
 import planetsDatabase from './planets.mongo.js';
-const launch = {
-    flightNumber: 100,
-    mission: 'Kepler Exploration X',
-    rocket: 'Explorer IS1',
-    launchDate: new Date('December 27, 2030'),
-    target: 'Kepler-442 b',
-    customers: ['ZTM', 'NASA'],
-    upcoming: true,
-    success: true
-};
 const getLatestFlightNumber = async () => {
     const latestLaunch = await launchesDatabase.findOne().sort('-flightNumber');
     if (!latestLaunch) {
@@ -20,8 +10,12 @@ const getLatestFlightNumber = async () => {
     }
     return latestLaunch.flightNumber;
 };
-export const fetchAllLaunches = async () => {
-    return await launchesDatabase.find({}, { _id: 0, __v: 0 });
+export const fetchAllLaunches = async (skip, limit) => {
+    return await launchesDatabase
+        .find({}, { _id: 0, __v: 0 })
+        .sort({ flightNumber: 1 })
+        .skip(skip)
+        .limit(limit);
 };
 const saveLaunch = async (launch) => {
     await launchesDatabase.updateOne({
@@ -30,8 +24,6 @@ const saveLaunch = async (launch) => {
         upsert: true
     });
 };
-// @ts-ignore
-saveLaunch(launch);
 const SPACEX_API_URL = process.env.SPACEX_API_URL;
 const latestLaunchExistsInDB = async () => {
     const response = await axios.get(`${SPACEX_API_URL}/launches/upcoming`);
@@ -43,7 +35,7 @@ const latestLaunchExistsInDB = async () => {
         mission: latestSpaceXLaunch.name
     });
     if (response.status !== 200) {
-        console.log("Problem downloading SpaceX Launch Data");
+        console.log('Problem downloading SpaceX Launch Data');
         throw new Error('Launch Data Download Failed');
     }
     return existsInDatabase;
@@ -71,7 +63,7 @@ const populateLaunchesDB = async () => {
         }
     });
     if (response.status !== 200) {
-        console.log("Problem downloading SpaceX Launch Data");
+        console.log('Problem downloading SpaceX Launch Data');
         throw new Error('Launch Data Download Failed');
     }
     const launchDocs = response.data.docs;

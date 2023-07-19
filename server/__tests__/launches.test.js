@@ -1,6 +1,9 @@
 import request from 'supertest';
 import app from '../dist/app.js';
 import mongoConnect, { mongoDiconnect } from '../dist/services/mongo.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // Set this to true to console log tested values
 const ENABLE_LOGGING = false;
@@ -105,7 +108,7 @@ describe('Launches API', () => {
         launchDate: 'June 6, 2023',
         target: 'Kepler-442 b'
       });
-      console.log(newLaunchResponse.body)
+      console.log(newLaunchResponse.body);
       const response = await request(app).delete(
         `/v1/launches/${newLaunchResponse.body.flightNumber}`
       );

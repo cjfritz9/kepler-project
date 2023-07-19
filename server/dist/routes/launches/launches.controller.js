@@ -1,6 +1,9 @@
 import { scheduleNewLaunch, abortLaunch, fetchAllLaunches, launchExistsWithId } from '../../models/launches.model.js';
-export const getAllLaunches = async (_req, res) => {
-    return res.status(200).json(await fetchAllLaunches());
+import getPagination from '../../services/query.js';
+export const getAllLaunches = async (req, res) => {
+    const { skip, limit } = getPagination(req.query);
+    const launches = await fetchAllLaunches(skip, limit);
+    return res.status(200).json(launches);
 };
 export const postNewLaunch = async (req, res) => {
     const launch = req.body;

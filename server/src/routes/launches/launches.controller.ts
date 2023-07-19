@@ -5,9 +5,14 @@ import {
   fetchAllLaunches,
   launchExistsWithId
 } from '../../models/launches.model.js';
+import getPagination from '../../services/query.js';
 
-export const getAllLaunches = async (_req: Request, res: Response) => {
-  return res.status(200).json(await fetchAllLaunches());
+export const getAllLaunches = async (req: Request, res: Response) => {
+  const { skip, limit } = getPagination(
+    req.query as { page: string; limit: string }
+  );
+  const launches = await fetchAllLaunches(skip, limit);
+  return res.status(200).json(launches);
 };
 
 export const postNewLaunch = async (req: Request, res: Response) => {

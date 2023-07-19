@@ -16,17 +16,6 @@ interface Launch {
   success: boolean;
 }
 
-const launch = {
-  flightNumber: 100,
-  mission: 'Kepler Exploration X',
-  rocket: 'Explorer IS1',
-  launchDate: new Date('December 27, 2030'),
-  target: 'Kepler-442 b',
-  customers: ['ZTM', 'NASA'],
-  upcoming: true,
-  success: true
-};
-
 const getLatestFlightNumber = async () => {
   const latestLaunch = await launchesDatabase.findOne().sort('-flightNumber');
 
@@ -37,8 +26,12 @@ const getLatestFlightNumber = async () => {
   return latestLaunch.flightNumber;
 };
 
-export const fetchAllLaunches = async () => {
-  return await launchesDatabase.find({}, { _id: 0, __v: 0 });
+export const fetchAllLaunches = async (skip: number, limit: number) => {
+  return await launchesDatabase
+    .find({}, { _id: 0, __v: 0 })
+    .sort({ flightNumber: 1 })
+    .skip(skip)
+    .limit(limit);
 };
 
 const saveLaunch = async (launch: Launch) => {
@@ -53,59 +46,50 @@ const saveLaunch = async (launch: Launch) => {
   );
 };
 
-// @ts-ignore
-saveLaunch(launch);
-
 const SPACEX_API_URL = process.env.SPACEX_API_URL;
 
 const latestLaunchExistsInDB = async () => {
-  const response = await axios.get(
-    `${SPACEX_API_URL}/launches/upcoming`
-  );
+  const response = await axios.get(`${SPACEX_API_URL}/launches/upcoming`);
   const upcomingLaunchesCount = response.data.length;
-  const latestSpaceXLaunch =
-    response.data[upcomingLaunchesCount - 1];
+  const latestSpaceXLaunch = response.data[upcomingLaunchesCount - 1];
   const existsInDatabase = await findLaunch({
     flightNumber: latestSpaceXLaunch.flight_number,
     launchDate: latestSpaceXLaunch.date_local,
     mission: latestSpaceXLaunch.name
   });
   if (response.status !== 200) {
-    console.log("Problem downloading SpaceX Launch Data");
-    throw new Error('Launch Data Download Failed')
+    console.log('Problem downloading SpaceX Launch Data');
+    throw new Error('Launch Data Download Failed');
   }
   return existsInDatabase;
-}
+};
 
 const populateLaunchesDB = async () => {
   console.log('SpaceX Data Updating...');
-  const response = await axios.post(
-    `${SPACEX_API_URL}/launches/query`,
-    {
-      query: {},
-      options: {
-        pagination: false,
-        populate: [
-          {
-            path: 'rocket',
-            select: {
-              name: 1
-            }
-          },
-          {
-            path: 'payloads',
-            select: {
-              customers: 1
-            }
+  const response = await axios.post(`${SPACEX_API_URL}/launches/query`, {
+    query: {},
+    options: {
+      pagination: false,
+      populate: [
+        {
+          path: 'rocket',
+          select: {
+            name: 1
           }
-        ]
-      }
+        },
+        {
+          path: 'payloads',
+          select: {
+            customers: 1
+          }
+        }
+      ]
     }
-  );
+  });
 
   if (response.status !== 200) {
-    console.log("Problem downloading SpaceX Launch Data");
-    throw new Error('Launch Data Download Failed')
+    console.log('Problem downloading SpaceX Launch Data');
+    throw new Error('Launch Data Download Failed');
   }
 
   const launchDocs = response.data.docs;
