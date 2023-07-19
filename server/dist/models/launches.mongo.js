@@ -18,9 +18,8 @@ const launchesScema = new Schema({
     },
     target: {
         type: String,
-        required: true
     },
-    customer: {
+    customers: {
         type: [String],
         default: ['ZTM', 'NASA']
     },

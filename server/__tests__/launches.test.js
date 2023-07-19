@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from '../dist/app.js';
-import mongoConnect, { mongoDiconnect } from '../src/services/mongo.js';
+import mongoConnect, { mongoDiconnect } from '../dist/services/mongo.js';
 
 // Set this to true to console log tested values
 const ENABLE_LOGGING = false;
@@ -15,17 +15,17 @@ describe('Launches API', () => {
   });
   describe('GET /launches', () => {
     test('It should respond with 200 success', async () => {
-      const response = await request(app).get('/launches');
+      const response = await request(app).get('/v1/launches');
       if (ENABLE_LOGGING) console.log(response.statusCode);
       expect(response.statusCode).toBe(200);
     });
     test('It should respond with an array', async () => {
-      const response = await request(app).get('/launches');
+      const response = await request(app).get('/v1/launches');
       if (ENABLE_LOGGING) console.log(response.body);
       expect(response.body).toEqual(expect.any(Array));
     });
     test('Each array item should be a valid launch object', async () => {
-      const response = await request(app).get('/launches');
+      const response = await request(app).get('/v1/launches');
       if (ENABLE_LOGGING) console.log(response.body);
       response.body.map((launch) => {
         expect(typeof launch.flightNumber).toBe('number');
@@ -33,7 +33,7 @@ describe('Launches API', () => {
         expect(typeof launch.rocket).toBe('string');
         expect(new Date(launch.launchDate) instanceof Date).toBe(true);
         expect(typeof launch.target).toBe('string');
-        expect(Array.isArray(launch.customer)).toBe(true);
+        expect(Array.isArray(launch.customers)).toBe(true);
         expect(typeof launch.upcoming).toBe('boolean');
         expect(typeof launch.success).toBe('boolean');
       });
@@ -42,7 +42,7 @@ describe('Launches API', () => {
 
   describe('POST /launches', () => {
     test('It should respond with 201 Created', async () => {
-      const response = await request(app).post('/launches').send({
+      const response = await request(app).post('/v1/launches').send({
         mission: 'DSCOVR IFWRKNG',
         rocket: 'SuperTest EXP-201',
         launchDate: 'June 6, 2023',
@@ -53,7 +53,7 @@ describe('Launches API', () => {
     });
 
     test('It should respond with the created launch', async () => {
-      const response = await request(app).post('/launches').send({
+      const response = await request(app).post('/v1/launches').send({
         mission: 'DSCOVR IFWRKNG GUD',
         rocket: 'SuperTest EXP-201',
         launchDate: 'June 6, 2023',
@@ -73,7 +73,7 @@ describe('Launches API', () => {
     });
 
     test('It should respond with 400 Error', async () => {
-      const response = await request(app).post('/launches').send({
+      const response = await request(app).post('/v1/launches').send({
         mission: '',
         rocket: 'SuperTest EXP-201',
         launchDate: 'June 6, 2023',
@@ -84,7 +84,7 @@ describe('Launches API', () => {
     });
 
     test('It should respond with a descriptive error', async () => {
-      const response = await request(app).post('/launches').send({
+      const response = await request(app).post('/v1/launches').send({
         mission: '',
         rocket: 'SuperTest EXP-201',
         launchDate: 'June 6, 2023',
@@ -99,7 +99,7 @@ describe('Launches API', () => {
 
   describe('DELETE /launches/:id', () => {
     test('It should respond with 202 Accepted', async () => {
-      const newLaunchResponse = await request(app).post('/launches').send({
+      const newLaunchResponse = await request(app).post('/v1/launches').send({
         mission: 'New Test Launch',
         rocket: 'SuperTest EXP-201',
         launchDate: 'June 6, 2023',
@@ -107,7 +107,7 @@ describe('Launches API', () => {
       });
       console.log(newLaunchResponse.body)
       const response = await request(app).delete(
-        `/launches/${newLaunchResponse.body.flightNumber}`
+        `/v1/launches/${newLaunchResponse.body.flightNumber}`
       );
       console.log('202 DEL REL', response);
       if (ENABLE_LOGGING) console.log(response.statusCode);
@@ -116,13 +116,13 @@ describe('Launches API', () => {
     });
 
     test('It should respond with 404 Not Found', async () => {
-      const response = await request(app).delete(`/launches/500000`);
+      const response = await request(app).delete(`/v1/launches/500000`);
       if (ENABLE_LOGGING) console.log(response.body);
       expect(response.statusCode).toBe(404);
     });
 
     test('It should respond with a descriptive error', async () => {
-      const response = await request(app).delete(`/launches/500000`);
+      const response = await request(app).delete(`/v1/launches/500000`);
       if (ENABLE_LOGGING) console.log(response.body);
       expect(response.body).toEqual({
         error: 'No launch found by Flight Number 500000'
