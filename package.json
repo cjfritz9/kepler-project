@@ -8,6 +8,7 @@
     "install-server": "npm install --prefix server",
     "install-client": "npm install --prefix client",
     "install-all": "npm install && npm install --prefix client && npm install --prefix server",
+    "docker:install": "npm install --omit=dev && npm install --prefix server --omit=dev",
     "server": "npm start --prefix server",
     "client:build": "npm run build --prefix client",
     "server:dev": "npm run start:dev --prefix server",

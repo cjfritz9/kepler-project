@@ -1,15 +1,11 @@
-FROM node:16-slim
+FROM node:16-alpine
 
 WORKDIR /
 
-COPY . .
+COPY package*.json ./
+COPY ./database ./database
+COPY ./server ./server
 
-RUN npm run install-all
-RUN npm run client:build
+RUN npm run docker:install
 
-WORKDIR /server
-
-ENV PORT=8080
-ENV MONGO_URI='mongodb+srv://nasa-api:Vk2Ctzt2Xkd8bHh6@nasa-cluster.rqgtwab.mongodb.net/nasa-db?retryWrites=true&w=majority'
-
-CMD ["npm", "start"]
+CMD ["npm", "run", "server"]
