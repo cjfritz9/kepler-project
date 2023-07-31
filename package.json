@@ -17,6 +17,7 @@
     "deploy:cluster": "npm run build --prefix client && npm run cluster --prefix server",
     "shutdown": "npm run cluster:stop --prefix server",
     "test-all": "npm test --prefix client && npm test --prefix server",
+    "test-client": "npm run test --passWithNoTests --prefix client",
     "test-server": "npm run test --prefix server",
     "test:watch-server": "npm run test:watch --prefix server"
   },

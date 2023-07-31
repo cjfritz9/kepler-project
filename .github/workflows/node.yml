@@ -18,6 +18,6 @@ jobs:
       - run: npm run install-all
       - run: npm run client:build
       - name: Test React App
-        run: npm test --prefix client
+        run: npm run test-client
       - name: Test Server & Database
-        run: npm test-server
+        run: npm run test-server
