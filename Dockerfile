@@ -8,4 +8,6 @@ COPY ./server ./server
 
 RUN npm run docker:install
 
+USER node
+
 CMD ["npm", "run", "server"]
