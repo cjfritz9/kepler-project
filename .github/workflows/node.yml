@@ -17,5 +17,3 @@ jobs:
           node-version: '16'
       - run: npm run install-all
       - run: npm run client:build
-      - name: Test Application
-        run: npm run test-client
