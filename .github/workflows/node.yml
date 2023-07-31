@@ -6,6 +6,8 @@ on:
     branches: [main]
 jobs:
   build:
+    env:
+      CI: true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -15,3 +17,7 @@ jobs:
           node-version: '16'
       - run: npm run install-all
       - run: npm run client:build
+      - name: Test React App
+        run: npm test --prefix client
+      - name: Test Server & Database
+        run: npm test-server

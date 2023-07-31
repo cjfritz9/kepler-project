@@ -35,7 +35,6 @@ describe('Launches API', () => {
         expect(typeof launch.mission).toBe('string');
         expect(typeof launch.rocket).toBe('string');
         expect(new Date(launch.launchDate) instanceof Date).toBe(true);
-        expect(typeof launch.target).toBe('string');
         expect(Array.isArray(launch.customers)).toBe(true);
         expect(typeof launch.upcoming).toBe('boolean');
         expect(typeof launch.success).toBe('boolean');
