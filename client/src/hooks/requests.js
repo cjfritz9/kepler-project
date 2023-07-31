@@ -1,9 +1,5 @@
 import axios from 'axios';
-let API_URL = 'https://nasa-project-4yjnpj6ixq-uc.a.run.app/v1';
-
-if (process.env.NODE_ENV === 'development') {
-  API_URL = "http://localhost:8080/v1";
-}
+const API_URL = 'v1';
 
 export const httpGetPlanets = async () => {
   // TODO: Once API is ready.
