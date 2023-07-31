@@ -11,7 +11,7 @@ mongoose.connection.on('error', (err) => {
 const mongoConnect = async () => {
     await mongoose.connect(MONGO_URI);
 };
-export const mongoDiconnect = async () => {
+export const mongoDisconnect = async () => {
     await mongoose.disconnect();
 };
 export default mongoConnect;

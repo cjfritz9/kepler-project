@@ -1,7 +1,9 @@
 import request from 'supertest';
-import app from '../dist/app.js';
-import mongoConnect, { mongoDiconnect } from '../dist/services/mongo.js';
 import dotenv from 'dotenv';
+
+import app from '../dist/app.js';
+import mongoConnect, { mongoDisconnect } from '../dist/services/mongo.js';
+import { loadPlanetsData } from '../dist/models/planets.model.js';
 
 dotenv.config();
 
@@ -11,10 +13,11 @@ const ENABLE_LOGGING = false;
 describe('Launches API', () => {
   beforeAll(async () => {
     await mongoConnect();
+    await loadPlanetsData();
   });
 
   afterAll(async () => {
-    await mongoDiconnect();
+    await mongoDisconnect();
   });
   describe('GET /launches', () => {
     test('It should respond with 200 success', async () => {
